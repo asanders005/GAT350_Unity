@@ -43,6 +43,7 @@ Shader "GAT350/UnlitCustom"
 
 			// Palette variation
 			// https://iquilezles.org/articles/palettes/
+			// Palette creation tool
 			// http://dev.thi.ng/gradients/
 			float3 palette(float t)
 			{
