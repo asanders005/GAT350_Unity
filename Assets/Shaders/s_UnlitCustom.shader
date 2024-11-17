@@ -43,6 +43,7 @@ Shader "GAT350/UnlitCustom"
 
 			// Palette variation
 			// https://iquilezles.org/articles/palettes/
+			// http://dev.thi.ng/gradients/
 			float3 palette(float t)
 			{
 				float3 a = float3(_ColorA.rgb);
@@ -60,24 +61,29 @@ Shader "GAT350/UnlitCustom"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
 				o.objectPos = v.vertex.xyz;
-                //UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
+				// Get coordinates of object in relation to object location
 				float3 uv = i.objectPos;
 				float3 uv0 = uv;
                 float3 color = (0.0, 0.0, 0.0);
                 
+				// loop for more details
 				for (float f = 0.0; f < 4.0; f++)
 				{
+					// Split object into seperate quadrants for repeating patterns
 					uv = frac(uv * 1.5) - 0.5;
 
+					// Calculate local distance of fragment to center of object
 					float d = length(uv) * exp(-length(uv0));
 
+					// Get color from palette relative to position on object & time
 					float3 col = palette(length(uv0) + f * 0.4 + _Time.y * 0.4);
 
+					// Display colors as hard lines on a dark background
 					d = sin(d * 8.0 + _Time.y) / 8.0;
 					d = abs(d);
 
@@ -86,8 +92,6 @@ Shader "GAT350/UnlitCustom"
 					color += col * d;
 				}
 
-                // apply fog
-                //UNITY_APPLY_FOG(i.fogCoord, color);
                 return fixed4(color, 1.0);
             }
             ENDCG
